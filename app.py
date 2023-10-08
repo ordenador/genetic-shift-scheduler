@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, jsonify
-import json
-from turnos_lib import optimize_schedule, NAMES
-import os
 from datetime import datetime
+from flask import Flask, render_template, request, jsonify
+from turnos_lib import optimize_schedule
 import hashlib
+import json
+import os
 
 SAVE_PATH = "saved_schedules"  # Carpeta donde se guardarán las programaciones
 
@@ -25,14 +25,15 @@ def file_content_hash(filepath):
 def index():
     return render_template('index.html')
 
+
 @app.route('/save_schedule', methods=['POST'])
 def save_schedule():
     schedule = request.json
-    
+
     # Comprobar si el horario está vacío
     if not schedule:
         return jsonify(success=False, message="La programación está vacía. No se guardará.")
-    
+
     # Calcular el hash del horario recibido
     current_schedule_hash = hashlib.md5(json.dumps(schedule, sort_keys=True).encode()).hexdigest()
 
@@ -41,14 +42,14 @@ def save_schedule():
         filepath = os.path.join(SAVE_PATH, filename)
         if file_content_hash(filepath) == current_schedule_hash:
             return jsonify(success=False, message="Esta programación ya ha sido guardada previamente.")
-    
+
     # Si no se encontró coincidencia, guardar el archivo
     filename = "turnos_" + datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + ".json"
     filepath = os.path.join(SAVE_PATH, filename)
-    
+
     with open(filepath, 'w') as f:
         json.dump(schedule, f, indent=4)
-    
+
     return jsonify(success=True, message="Programación guardada exitosamente!")
 
 
@@ -68,7 +69,6 @@ def load_file_schedule():
     return jsonify(success=True, data=schedule)
 
 
-
 @app.route('/list_schedules', methods=['GET'])
 def list_schedules():
     files = os.listdir(SAVE_PATH)
@@ -76,12 +76,11 @@ def list_schedules():
     return jsonify(files)
 
 
-
 @app.route('/optimize', methods=['POST'])
 def optimize():
     data = request.json
     names = data['names']
-    
+
     optimized_schedule = optimize_schedule(names, generations=200)
     return jsonify(optimized_schedule)
 

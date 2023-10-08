@@ -1,13 +1,12 @@
-import random
-from deap import base, creator, tools
-import json
 from datetime import datetime
+from deap import base, creator, tools
 import calendar
+import random
 
 
 NAMES = ["Ana", "Carlos", "Lucía", "Miguel", "Sofía", "David"]
 WEEKS_IN_YEAR = 52
-YEAR=2023
+YEAR = 2023
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)
@@ -64,10 +63,7 @@ def init_individual():
         attempts += 1
         if attempts > 10:  # Limitamos los intentos para evitar ciclos infinitos
             break
-    # print(f"Backtracking attempts for initialization: {attempts}")
     return individual
-
-
 
 
 def evaluate(individual, year=YEAR):  # Hacemos que el año sea parametrizable
@@ -95,24 +91,25 @@ def evaluate(individual, year=YEAR):  # Hacemos que el año sea parametrizable
         last_day = calendar.monthrange(year, month)[1]
         first_week = datetime(year, month, 1).isocalendar()[1]
         last_week = datetime(year, month, last_day).isocalendar()[1]
-        
+
         month_day_workers = day_workers[first_week-1:last_week]
         month_night_workers = night_workers[first_week-1:last_week]
         month_weekend_workers = weekend_workers[first_week-1:last_week]
-        
+
         weeks_in_month = last_week - first_week + 1
         expected_days_in_month = weeks_in_month / len(NAMES)
         month_variances.append(sum([
             calculate_variance({i: month_day_workers.count(i) for i in set(month_day_workers)}, expected_days_in_month),
-            calculate_variance({i: month_night_workers.count(i) for i in set(month_night_workers)}, expected_days_in_month),
-            calculate_variance({i: month_weekend_workers.count(i) for i in set(month_weekend_workers)}, expected_days_in_month)
+            calculate_variance({i: month_night_workers.count(i)
+                               for i in set(month_night_workers)}, expected_days_in_month),
+            calculate_variance({i: month_weekend_workers.count(i)
+                               for i in set(month_weekend_workers)}, expected_days_in_month)
         ]))
-    
+
     # Combinar la varianza total y la varianza mensual para obtener la medida final de desequilibrio
     total_variance = 2 * year_variance + sum(month_variances)
 
     return total_variance,
-
 
 
 def mutate_individual(ind, year=YEAR):
@@ -127,15 +124,15 @@ def mutate_individual(ind, year=YEAR):
         attempts += 1
         if attempts > 10:  # Limitamos los intentos para evitar ciclos infinitos
             break
-    # print(f"Mutation attempts: {attempts}")
     return ind,
+
 
 def setup_toolbox():
     global toolbox
-    
+
     # Reiniciar la toolbox
     toolbox = base.Toolbox()
-    
+
     # Configuraciones
     toolbox.register("individual", tools.initIterate, creator.Individual, init_individual)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -167,46 +164,38 @@ def optimize_schedule(names, year=YEAR, generations=200, population_size=100):
 
     for gen in range(NGEN):
         print(f"-- Generación {gen} --")
-        
+
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
-        
+
         # Cruzamiento
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
             if random.random() < CXPB:
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values
-        
+
         # Mutación
         for mutant in offspring:
             if random.random() < MUTPB:
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
 
-        
         # Verificar y corregir individuos inválidos
         for child in offspring:
             if not is_valid(child):
                 child[:] = init_individual()
 
-        
         # Evaluar individuos después del cruzamiento y mutación
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
-        
+
         # Actualizar la población
         pop[:] = offspring
 
     best_ind = tools.selBest(pop, 1)[0]
     best_named_ind = convert_to_names(best_ind)
 
-    # with open('turnos.json', 'w') as f:
-    #     json.dump(best_named_ind, f, indent=4)
-    # print("\nAsignación de turnos para el año guardada en turnos.json")
     return best_named_ind
-
-    
-
