@@ -66,7 +66,7 @@ def init_individual():
     return individual
 
 
-def evaluate(individual, year=YEAR):  # Hacemos que el año sea parametrizable
+def evaluate(individual, year=YEAR):
     """Función de aptitud que mide cuán equitativa es la distribución durante el año y dentro de cada mes."""
     # Función auxiliar para calcular la varianza
     def calculate_variance(counts, expected):
