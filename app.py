@@ -82,7 +82,7 @@ def optimize():
     data = request.json
     names = data['names']
     
-    optimized_schedule = optimize_schedule(names, generations=10)
+    optimized_schedule = optimize_schedule(names, generations=200)
     return jsonify(optimized_schedule)
 
 
