@@ -84,10 +84,6 @@
         <hr />
         <div id="metrics"></div>
         <div id="monthlyMetrics" class="mt-5"></div>
-
-
-
-
     </div>
 
     <script>
@@ -175,19 +171,6 @@
             });
         }
 
-
-        // function optimize() {
-        //     $('#optimizing').show();  // Mostrar el spinner
-        //     $('#btn-optimize').attr('disabled', true);  // Desactiva el botón
-
-        //     $.post('/optimize', {}, function (data) {
-        //         updateCalendar(data);
-        //         $('#optimizing').hide();  // Ocultar el spinner
-        //         $('#btn-optimize').attr('disabled', false);  // Reactivar el botón
-        //     });
-        // }
-
-
         function addNameField() {
             var nameField = '<div class="input-group mb-2">' +
                                 '<input type="text" class="worker-name form-control" placeholder="Nombre del trabajador">' +
@@ -250,7 +233,6 @@
         }
 
 
-
         function transformToEvents(data) {
             return data.map(function(week, index) {
                 var startDate = getDateFromWeek(index, currentYear);
@@ -299,7 +281,6 @@
         }
 
 
-
         function generateMetrics(data) {
             const counts = {};
 
@@ -329,11 +310,9 @@
         }
 
 
-
         function getMonthFromDate(date) {
             return date.getMonth();
         }
-
 
 
         function generateMonthlyMetrics(data) {
@@ -371,14 +350,6 @@
             const metricsDiv = document.getElementById('monthlyMetrics');
             metricsDiv.innerHTML = tableHTML;
         }
-
-
-
-
-
-
-
-
 
 </script>
 
