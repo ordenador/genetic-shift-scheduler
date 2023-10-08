@@ -32,6 +32,10 @@
 
 El **Genetic Shift Scheduler** es una herramienta innovadora que emplea algoritmos genéticos para generar horarios de trabajo óptimos para un año completo, distribuyendo de manera equitativa los turnos entre los empleados y respetando las restricciones de asignación de turnos.
 
+<p align="center">
+  <img src="img/ui.jpg" alt="User Interface"/>
+</p>
+
 ## Componentes Principales:
 
 ### Algoritmo Genético:
