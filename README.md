@@ -6,12 +6,12 @@
   - [Tabla de Contenido](#tabla-de-contenido)
   - [Descripción General](#descripción-general)
   - [Componentes Principales:](#componentes-principales)
-    - [1. Algoritmo Genético:](#1-algoritmo-genético)
-    - [2. Interfaz de Usuario:](#2-interfaz-de-usuario)
+    - [Algoritmo Genético:](#algoritmo-genético)
+    - [Interfaz de Usuario:](#interfaz-de-usuario)
   - [Guía Rápida de Uso del Sistema](#guía-rápida-de-uso-del-sistema)
     - [Instalación y Configuración:](#instalación-y-configuración)
     - [Uso del Sistema:](#uso-del-sistema)
-  - [Detalles Técnicos:](#detalles-técnicos)
+  - [Detalles Técnicos](#detalles-técnicos)
     - [Back-end (Python con Flask):](#back-end-python-con-flask)
     - [Front-end (HTML y JavaScript):](#front-end-html-y-javascript)
   - [Diseño y Codificación del Individuo](#diseño-y-codificación-del-individuo)
@@ -34,13 +34,13 @@ El **Genetic Shift Scheduler** es una herramienta innovadora que emplea algoritm
 
 ## Componentes Principales:
 
-### 1. Algoritmo Genético:
+### Algoritmo Genético:
 - **Cromosoma**: Representa una asignación de turnos para todo el año.
 - **Función de aptitud**: Evalúa qué tan equitativa es una solución.
 - **Operadores**: Cruzamiento, mutación y selección.
 - **Ejecución y Evaluación**: Ejecuta el algoritmo y evalúa los resultados.
 
-### 2. Interfaz de Usuario:
+### Interfaz de Usuario:
    Se utiliza Flask y HTML para construir una interfaz web que permite:
    - Ingresar los nombres de los trabajadores.
    - Solicitar una nueva optimización de turnos.
@@ -71,7 +71,7 @@ El **Genetic Shift Scheduler** es una herramienta innovadora que emplea algoritm
 
 ---
 
-## Detalles Técnicos:
+## Detalles Técnicos
 
 ### Back-end (Python con Flask):
 
