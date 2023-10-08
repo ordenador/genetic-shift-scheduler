@@ -18,6 +18,7 @@
     - [Estructura del Individuo:](#estructura-del-individuo)
     - [Representación Genética:](#representación-genética)
   - [Evaluación mediante Función de Aptitud (Fitness)](#evaluación-mediante-función-de-aptitud-fitness)
+  - [Requerimientos del Software de Gestión de Turnos con Enfoque en Algoritmo Genético](#requerimientos-del-software-de-gestión-de-turnos-con-enfoque-en-algoritmo-genético)
     - [Definición de Turnos:](#definición-de-turnos)
     - [Directrices de Asignación:](#directrices-de-asignación)
     - [3. Evaluación y Métricas:](#3-evaluación-y-métricas)
@@ -113,20 +114,19 @@ La representación genética de un individuo se realiza mediante un cromosoma. E
 
 Para evaluar qué tan bueno es un horario propuesto (o individuo), usamos una función de aptitud definida como:
 
-\[ f(i) = w_1 \times D_{anual}(i) + w_2 \times D_{mensual}(i) \]
+![f(i) equation](https://latex.codecogs.com/gif.latex?f(i)&space;=&space;w_1&space;\times&space;D_{anual}(i)&space;&plus;&space;w_2&space;\times&space;D_{mensual}(i))
 
 Dónde:
-- \( f(i) \): Representa la aptitud o calidad del horario del individuo \( i \).
-- \( D_{anual}(i) \): Mide la variabilidad o desigualdad en la distribución de turnos durante todo el año para el individuo \( i \).
-- \( D_{mensual}(i) \): Evalúa la desviación o inconsistencia en la asignación de turnos para el individuo \( i \) en un mes específico.
-- \( w_1 \) y \( w_2 \): Son pesos o coeficientes que determinan la importancia relativa entre la distribución de turnos anual y mensual. Por ejemplo, si se desea que la equidad en la distribución anual sea más importante que la mensual, \( w_1 \) sería mayor que \( w_2 \).
+- ![f(i)](https://latex.codecogs.com/gif.latex?f(i)): Representa la aptitud o calidad del horario del individuo \( i \).
+- ![D_anual(i)](https://latex.codecogs.com/gif.latex?D_{anual}(i)): Mide la variabilidad o desigualdad en la distribución de turnos durante todo el año para el individuo \( i \).
+- ![D_mensual(i)](https://latex.codecogs.com/gif.latex?D_{mensual}(i)): Evalúa la desviación o inconsistencia en la asignación de turnos para el individuo \( i \) en un mes específico.
+- ![w_1 and w_2](https://latex.codecogs.com/gif.latex?w_1&space;and&space;w_2): Son pesos o coeficientes que determinan la importancia relativa entre la distribución de turnos anual y mensual. Por ejemplo, si se desea que la equidad en la distribución anual sea más importante que la mensual, \( w_1 \) sería mayor que \( w_2 \).
 
 Esta función asegura que el horario no solo sea equitativo a lo largo del año, sino también mes a mes. Es esencial para garantizar que ningún empleado sea desfavorecido en la asignación de turnos.
 
----
-**Requerimientos del Software de Gestión de Turnos con Enfoque en Algoritmo Genético**
 
 ---
+## Requerimientos del Software de Gestión de Turnos con Enfoque en Algoritmo Genético
 
 ### Definición de Turnos:
 
