@@ -1,183 +1,181 @@
 # Genetic Shift Scheduler
 
-## Tabla de Contenido
+## Table of Contents
 
 - [Genetic Shift Scheduler](#genetic-shift-scheduler)
-  - [Tabla de Contenido](#tabla-de-contenido)
-  - [Descripción General](#descripción-general)
-  - [Componentes Principales:](#componentes-principales)
-    - [Algoritmo Genético:](#algoritmo-genético)
-    - [Interfaz de Usuario:](#interfaz-de-usuario)
-  - [Guía Rápida de Uso del Sistema](#guía-rápida-de-uso-del-sistema)
-    - [Instalación y Configuración:](#instalación-y-configuración)
-    - [Uso del Sistema:](#uso-del-sistema)
-  - [Detalles Técnicos](#detalles-técnicos)
-    - [Back-end (Python con Flask):](#back-end-python-con-flask)
-    - [Front-end (HTML y JavaScript):](#front-end-html-y-javascript)
-  - [Diseño y Codificación del Individuo](#diseño-y-codificación-del-individuo)
-    - [Estructura del Individuo:](#estructura-del-individuo)
-    - [Representación Genética:](#representación-genética)
-  - [Evaluación mediante Función de Aptitud (Fitness)](#evaluación-mediante-función-de-aptitud-fitness)
-  - [Requerimientos del Software de Gestión de Turnos con Enfoque en Algoritmo Genético](#requerimientos-del-software-de-gestión-de-turnos-con-enfoque-en-algoritmo-genético)
-    - [Definición de Turnos:](#definición-de-turnos)
-    - [Directrices de Asignación:](#directrices-de-asignación)
-    - [3. Evaluación y Métricas:](#3-evaluación-y-métricas)
-    - [4. Equidad y Optimización:](#4-equidad-y-optimización)
-  - [Contribuciones](#contribuciones)
-
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Key Components:](#key-components)
+    - [Genetic Algorithm:](#genetic-algorithm)
+    - [User Interface:](#user-interface)
+  - [Quick System Usage Guide](#quick-system-usage-guide)
+    - [Installation and Configuration:](#installation-and-configuration)
+    - [System Usage:](#system-usage)
+  - [Technical Details](#technical-details)
+    - [Back-end (Python with Flask):](#back-end-python-with-flask)
+    - [Front-end (HTML and JavaScript):](#front-end-html-and-javascript)
+  - [Individual Design and Encoding](#individual-design-and-encoding)
+    - [Individual Structure:](#individual-structure)
+    - [Genetic Representation:](#genetic-representation)
+  - [Evaluation through Fitness Function](#evaluation-through-fitness-function)
+  - [Software Requirements for Shift Management with Genetic Algorithm Focus](#software-requirements-for-shift-management-with-genetic-algorithm-focus)
+    - [Shift Definition:](#shift-definition)
+    - [Allocation Guidelines:](#allocation-guidelines)
+    - [3. Evaluation and Metrics:](#3-evaluation-and-metrics)
+    - [4. Equity and Optimization:](#4-equity-and-optimization)
+  - [Contributions](#contributions)
 
 ---
 
-## Descripción General
+## Overview
 
-El **Genetic Shift Scheduler** es una herramienta innovadora que emplea algoritmos genéticos para generar horarios de trabajo óptimos para un año completo, distribuyendo de manera equitativa los turnos entre los empleados y respetando las restricciones de asignación de turnos.
+The **Genetic Shift Scheduler** is an innovative tool that employs genetic algorithms to generate optimal work schedules for an entire year, distributing shifts equitably among employees while respecting shift allocation restrictions.
 
 <p align="center">
   <img src="img/ui.jpg" alt="User Interface"/>
 </p>
 
-## Componentes Principales:
+## Key Components:
 
-### Algoritmo Genético:
-- **Cromosoma**: Representa una asignación de turnos para todo el año.
-- **Función de aptitud**: Evalúa qué tan equitativa es una solución.
-- **Operadores**: Cruzamiento, mutación y selección.
-- **Ejecución y Evaluación**: Ejecuta el algoritmo y evalúa los resultados.
+### Genetic Algorithm:
+- **Chromosome**: Represents a shift assignment for the entire year.
+- **Fitness function**: Evaluates how equitable a solution is.
+- **Operators**: Crossover, mutation, and selection.
+- **Execution and Evaluation**: Executes the algorithm and evaluates the results.
 
-### Interfaz de Usuario:
-   Se utiliza Flask y HTML para construir una interfaz web que permite:
-   - Ingresar los nombres de los trabajadores.
-   - Solicitar una nueva optimización de turnos.
-   - Visualizar las asignaciones.
-   - Guardar y cargar programaciones previas.
-
----
-
-## Guía Rápida de Uso del Sistema
-
-### Instalación y Configuración:
-
-1. **Configura el Entorno Virtual:** Ejecuta el comando `make dev`. Este paso instalará los requerimientos necesarios y creará un entorno virtual (virtualenv) para el sistema.
-
-2. **Ejecuta el Servidor:** Una vez que se haya configurado el entorno, inicia el servidor Flask con el comando `make run`. Luego de ejecutarlo, el servicio estará disponible en el puerto `5000`.
-
-### Uso del Sistema:
-
-3. **Acceso a la Interfaz:** Abre un navegador y visita `http://localhost:5000` para acceder a la interfaz web del sistema.
-
-4. **Registro de Trabajadores:** Ingresa los nombres de los trabajadores que deseas programar.
-
-5. **Generación de Programación:** Haz clic en el botón "Crear Calendario". El sistema generará automáticamente una programación basada en los nombres que proporcionaste.
-
-6. **Visualización:** Observa los turnos en el calendario y las métricas que indican cómo se distribuyeron los turnos entre los trabajadores.
-
-7. **Guardado y Carga (Opcional):** Si lo deseas, puedes guardar la programación generada para consultarla en otro momento o cargar una programación que hayas guardado previamente.
+### User Interface:
+   Flask and HTML are used to construct a web interface that allows:
+   - Entering the names of the workers.
+   - Requesting a new shift optimization.
+   - Viewing the assignments.
+   - Saving and loading previous schedules.
 
 ---
 
-## Detalles Técnicos
+## Quick System Usage Guide
 
-### Back-end (Python con Flask):
+### Installation and Configuration:
 
-- Se usa la biblioteca `deap` para implementar el algoritmo genético.
-- Se definen varias funciones auxiliares para respetar los requerimientos del turno. Por ejemplo: `is_valid`, `backtrack`, `init_individual`, `evaluate`, y `mutate_individual`.
-- Se implementa una API web con Flask con endpoints para optimizar la programación (`/optimize`), guardar (`/save_schedule`), cargar (`/load_file_schedule`) y listar archivos de programaciones (`/list_schedules`).
+1. **Configure the Virtual Environment:** Run the `make dev` command. This step will install the necessary requirements and create a virtual environment (virtualenv) for the system.
 
-### Front-end (HTML y JavaScript):
+2. **Run the Server:** Once the environment has been set up, start the Flask server with the `make run` command. After executing it, the service will be available on port `5000`.
 
-- Se utiliza Bootstrap para el diseño y estilización.
-- Se proporciona una interfaz para ingresar nombres de trabajadores.
-- Los turnos se visualizan en un calendario usando `FullCalendar`.
-- Se permiten acciones para crear, guardar y cargar programaciones de turnos.
+### System Usage:
 
----
+3. **Access the Interface:** Open a browser and visit `http://localhost:5000` to access the web interface of the system.
 
-## Diseño y Codificación del Individuo
+4. **Worker Registration:** Enter the names of the workers you wish to schedule.
 
-### Estructura del Individuo:
+5. **Schedule Generation:** Click on the "Create Calendar" button. The system will automatically generate a schedule based on the names you provided.
 
-El individuo es una representación de un horario anual. Dado un conjunto de `T` turnos (por ejemplo, mañana, tarde, noche) y `E` empleados, un individuo visualmente se organiza de la siguiente forma:
+6. **Visualization:** Observe the shifts on the calendar and the metrics indicating how the shifts were distributed among the workers.
 
-| Semana 1 | Semana 2 | ... | Semana 52 |
-|:--------:|:--------:|:---:|:---------:|
-|    A    |    B    | ... |     C     |
-|    B    |    C    | ... |     D     |
-|    C    |    D    | ... |     A     |
-
-En esta estructura:
-- **Cada fila** representa un turno. Por ejemplo, la primera fila podría representar el turno de la mañana, la segunda fila el turno de la tarde, y así sucesivamente.
-- **Cada celda** dentro de una fila señala el empleado asignado para ese turno específico durante esa semana particular. 
-
-### Representación Genética:
-
-La representación genética de un individuo se realiza mediante un cromosoma. En este cromosoma:
-- Cada gen es un número entero que varía entre 1 y `E`, representando la identificación de un empleado.
-- La posición de cada gen en el cromosoma determina a qué turno y semana se refiere. Por ejemplo, el primer gen podría referirse al turno de la mañana de la semana 1, el segundo al turno de la tarde de la semana 1, y así sucesivamente.
-
-## Evaluación mediante Función de Aptitud (Fitness)
-
-Para evaluar qué tan bueno es un horario propuesto (o individuo), usamos una función de aptitud definida como:
-
-![f(i) equation](https://latex.codecogs.com/gif.latex?f(i)&space;=&space;w_1&space;\times&space;D_{anual}(i)&space;&plus;&space;w_2&space;\times&space;D_{mensual}(i))
-
-Dónde:
-- ![f(i)](https://latex.codecogs.com/gif.latex?f(i)): Representa la aptitud o calidad del horario del individuo \( i \).
-- ![D_anual(i)](https://latex.codecogs.com/gif.latex?D_{anual}(i)): Mide la variabilidad o desigualdad en la distribución de turnos durante todo el año para el individuo \( i \).
-- ![D_mensual(i)](https://latex.codecogs.com/gif.latex?D_{mensual}(i)): Evalúa la desviación o inconsistencia en la asignación de turnos para el individuo \( i \) en un mes específico.
-- ![w_1 and w_2](https://latex.codecogs.com/gif.latex?w_1&space;and&space;w_2): Son pesos o coeficientes que determinan la importancia relativa entre la distribución de turnos anual y mensual. Por ejemplo, si se desea que la equidad en la distribución anual sea más importante que la mensual, \( w_1 \) sería mayor que \( w_2 \).
-
-Esta función asegura que el horario no solo sea equitativo a lo largo del año, sino también mes a mes. Es esencial para garantizar que ningún empleado sea desfavorecido en la asignación de turnos.
-
-
----
-## Requerimientos del Software de Gestión de Turnos con Enfoque en Algoritmo Genético
-
-### Definición de Turnos:
-
-**a. Turno Fin de Semana:** 
-  - **Intervalo:** Desde el Viernes a las 16:01 hasta el Lunes a las 8:59.
-  - **Restricción:** El mismo empleado debe estar a cargo durante toda la duración del turno, desde el inicio el Viernes hasta el final el Lunes.
-
-**b. Turno Día:** 
-  - **Intervalo:** 
-    - Lunes a Jueves: 9:01 a 17:59.
-    - Viernes: 9:01 a 15:59.
-  - **Restricción:** Un solo empleado debe ser responsable durante toda la semana laboral, es decir, de Lunes a Viernes.
-
-**c. Turno Nocturno:** 
-  - **Intervalo:** Lunes a Jueves: 18:01 a 8:59 del día siguiente.
-  - **Restricciones:** 
-    - El mismo empleado cubre de Viernes a Domingo.
-    - No debe ser el empleado asignado al Turno Día de la misma semana.
-    - Se lleva a cabo simultáneamente con el Turno Día.
-
-### Directrices de Asignación:
-
-**a. Para el Empleado en Turno Día:**
-  - No debe ser asignado a los turnos Nocturno ni Fin de Semana en esa misma semana.
-  - Debe ser colocado en el Turno Nocturno en la semana subsiguiente.
-
-**b. Para el Empleado en Turno Nocturno:** 
-  - No debe ser asignado a los turnos Día ni Fin de Semana durante esa semana.
-  - Se le garantizará un periodo de descanso la semana siguiente, sin asignaciones.
-
-**c. Para el Empleado en Turno Fin de Semana:** 
-  - No debe ser asignado a los turnos Día ni Nocturno durante la misma semana.
-
-### 3. Evaluación y Métricas:
-
-**a. Informes Generales:** 
-  - El software debe facilitar métricas tanto mensuales como anuales, con el objetivo de evaluar la equidad en la distribución de turnos entre todos los empleados.
-
-**b. Distribución de Turnos:** 
-  - Es esencial visualizar la frecuencia con la que se asigna cada tipo de turno a cada empleado y comparar esa distribución con un reparto teóricamente equitativo.
-
-### 4. Equidad y Optimización:
-
-- El núcleo del software, el algoritmo genético, debe estar orientado a hallar una solución que promueva la equidad en la distribución de turnos. Esto asegura que, en el transcurso del tiempo, todos los empleados reciban una cantidad semejante de cada tipo de turno.
+7. **Save and Load (Optional):** If desired, you can save the generated schedule for later consultation or load a schedule that you previously saved.
 
 ---
 
-## Contribuciones
+## Technical Details
 
-Todas las contribuciones son bienvenidas. Revisa [CONTRIBUTING.md](./CONTRIBUTING.md) para más detalles sobre cómo colaborar con este proyecto.
+### Back-end (Python with Flask):
+
+- The `deap` library is used to implement the genetic algorithm.
+- Several auxiliary functions are defined to respect shift requirements. For example: `is_valid`, `backtrack`, `init_individual`, `evaluate`, and `mutate_individual`.
+- A web API with Flask is implemented with endpoints to optimize the schedule (`/optimize`), save (`/save_schedule`), load (`/load_file_schedule`), and list schedule files (`/list_schedules`).
+
+### Front-end (HTML and JavaScript):
+
+- Bootstrap is used for design and stylization.
+- An interface is provided for entering worker names.
+- Shifts are visualized on a calendar using `FullCalendar`.
+- Actions are allowed for creating, saving, and loading shift schedules.
+
+---
+
+## Individual Design and Encoding
+
+### Individual Structure:
+
+The individual is a representation of an annual schedule. Given a set of `T` shifts (for example, morning, afternoon, night) and `E` employees, an individual is visually organized as follows:
+
+| Week 1 | Week 2 | ... | Week 52 |
+|:------:|:------:|:---:|:-------:|
+|   A    |   B    | ... |   C     |
+|   B    |   C    | ... |   D     |
+|   C    |   D    | ... |   A     |
+
+In this structure:
+- **Each row** represents a shift. For example, the first row might represent the morning shift, the second row the afternoon shift, and so on.
+- **Each cell** within a row indicates the employee assigned to that specific shift during that particular week.
+
+### Genetic Representation:
+
+The genetic representation of an individual is carried out through a chromosome. In this chromosome:
+- Each gene is an integer number that ranges between 1 and `E`, representing the identification of an employee.
+- The position of each gene in the chromosome determines which shift and week it refers to. For example, the first gene might refer to the morning shift of week 1, the second to the afternoon shift of week 1, and so forth.
+
+## Evaluation through Fitness Function
+
+To evaluate how good a proposed schedule (or individual) is, we use a fitness function defined as:
+
+![f(i) equation](https://latex.codecogs.com/gif.latex?f(i)&space;=&space;w_1&space;\times&space;D_{annual}(i)&space;&plus;&space;w_2&space;\times&space;D_{monthly}(i))
+
+Where:
+- ![f(i)](https://latex.codecogs.com/gif.latex?f(i)): Represents the fitness or quality of the schedule of individual \( i \).
+- ![D_annual(i)](https://latex.codecogs.com/gif.latex?D_{annual}(i)): Measures the variability or inequality in the distribution of shifts throughout the year for individual \( i \).
+- ![D_monthly(i)](https://latex.codecogs.com/gif.latex?D_{monthly}(i)): Evaluates the deviation or inconsistency in the shift assignment for individual \( i \) in a specific month.
+- ![w_1 and w_2](https://latex.codecogs.com/gif.latex?w_1&space;and&space;w_2): Are weights or coefficients that determine the relative importance between the annual and monthly shift distribution. For instance, if the equity in the annual distribution is more important than the monthly, $\`w_1\`$ would be greater than $\`w_2\`$.
+
+This function ensures that the schedule is equitable not only throughout the year but also month by month. It is crucial to ensure that no employee is disadvantaged in shift allocation.
+
+---
+## Software Requirements for Shift Management with Genetic Algorithm Focus
+
+### Shift Definition:
+
+**a. Weekend Shift:** 
+  - **Interval:** From Friday at 16:01 to Monday at 8:59.
+  - **Restriction:** The same employee must be in charge throughout the duration of the shift, from the start on Friday to the end on Monday.
+
+**b. Day Shift:** 
+  - **Interval:** 
+    - Monday to Thursday: 9:01 to 17:59.
+    - Friday: 9:01 to 15:59.
+  - **Restriction:** A single employee should be responsible throughout the workweek, that is, from Monday to Friday.
+
+**c. Night Shift:** 
+  - **Interval:** Monday to Thursday: 18:01 to 8:59 of the next day.
+  - **Restrictions:** 
+    - The same employee covers from Friday to Sunday.
+    - Must not be the employee assigned to the Day Shift of the same week.
+    - It takes place simultaneously with the Day Shift.
+
+### Allocation Guidelines:
+
+**a. For the Employee on Day Shift:**
+  - Must not be assigned to the Night nor Weekend shifts in that same week.
+  - Should be placed on the Night Shift the following week.
+
+**b. For the Employee on Night Shift:** 
+  - Must not be assigned to the Day nor Weekend shifts during that week.
+  - Is guaranteed a rest period the following week, with no assignments.
+
+**c. For the Employee on Weekend Shift:** 
+  - Must not be assigned to the Day nor Night shifts during the same week.
+
+### 3. Evaluation and Metrics:
+
+**a. General Reports:** 
+  - The software should provide both monthly and annual metrics, aiming to evaluate the equity in shift distribution among all employees.
+
+**b. Shift Distribution:** 
+  - It is essential to visualize the frequency with which each type of shift is assigned to each employee and compare that distribution with a theoretically equitable distribution.
+
+### 4. Equity and Optimization:
+
+- The core of the software, the genetic algorithm, should be oriented to finding a solution that promotes equity in shift distribution. This ensures that, over time, all employees receive a similar amount of each type of shift.
+
+---
+
+## Contributions
+
+All contributions are welcome. Review [CONTRIBUTING.md](./CONTRIBUTING.md) for more details on how to collaborate on this project.
