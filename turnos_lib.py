@@ -4,34 +4,64 @@ import calendar
 import random
 
 
+# List of names of the workers
 NAMES = ["Ana", "Carlos", "Lucía", "Miguel", "Sofía", "David"]
+# Number of weeks in a year
 WEEKS_IN_YEAR = 52
+# Year for which the schedule is being optimized
 YEAR = 2023
 
+# DEAP (Distributed Evolutionary Algorithms in Python) is a framework for prototyping and testing evolutionary algorithms.
+# It provides a set of tools and techniques to design evolutionary algorithms without having to start from scratch.
+# Here, we are using DEAP to implement a genetic algorithm for optimizing a shift schedule.
+
+# In DEAP, we need to create types for fitness and individuals.
+# Fitness is a measure of how good a solution (individual) is.
+# Here, we are creating a fitness type named 'FitnessMin'. 
+# This fitness type is used to evaluate the individuals in our population. 
+# The weights parameter is used to define a minimization (-1.0) or maximization (1.0) problem.
+# In our case, we want to minimize the imbalance in the shift schedule, so we use -1.0.
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+
+# An individual represents a potential solution to our problem. 
+# In our case, an individual is a list with a 'FitnessMin' property.
+# The list contains the shift schedule for the entire year.
+# Each element of the list is a week, and each week is a list of three integers representing the workers for each shift.
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
+# The toolbox is a DEAP object that contains the evolutionary operators.
+# We will register our functions to this toolbox later.
 toolbox = base.Toolbox()
 
 
-# Funciones auxiliares
 def is_valid(individual):
+    """
+    This function checks if a schedule is valid according to the problem rules.
+    The rules are:
+    1. A worker cannot work two shifts in the same week.
+    2. The day worker of the current week must be the night worker of the next week.
+    3. The night worker of the current week cannot work in the next week.
+    :param individual: list of weeks, where each week is a list of three integers representing the workers
+    :return: True if the schedule is valid, False otherwise
+    """
     for i, week in enumerate(individual[:-1]):
         day_worker, night_worker, weekend_worker = week
 
-        # Regla 1
+        # Rule 1: A worker cannot work two shifts in the same week
         if day_worker == night_worker or day_worker == weekend_worker:
             return False
+        # Rule 1: The day worker of the current week must be the night worker of the next week
         if individual[i + 1][1] != day_worker:
             return False
 
-        # Regla 2
+        # Rule 2: A worker cannot work two shifts in the same week
         if night_worker == day_worker or night_worker == weekend_worker:
             return False
+        # Rule 2: The night worker of the current week cannot work in the next week
         if night_worker in individual[i + 1]:
             return False
 
-        # Regla 3
+        # Rule 3: A worker cannot work two shifts in the same week
         if weekend_worker == day_worker or weekend_worker == night_worker:
             return False
 
@@ -39,6 +69,15 @@ def is_valid(individual):
 
 
 def backtrack(individual):
+    """
+    This recursive function generates a valid schedule.
+    It uses a backtracking algorithm, which is a type of depth-first search.
+    The algorithm tries all possible combinations of workers for each week.
+    If it finds a valid schedule, it stops and returns True.
+    If it cannot find a valid schedule, it backtracks and tries a different combination.
+    :param individual: list of weeks, where each week is a list of three integers representing the workers
+    :return: True if a valid schedule has been generated, False otherwise
+    """
     if len(individual) == WEEKS_IN_YEAR:
         return True
     workers = list(range(len(NAMES)))
@@ -46,9 +85,12 @@ def backtrack(individual):
     for day_worker in workers:
         for night_worker in workers:
             for weekend_worker in workers:
+                # Check if the workers are different for the current week
                 if day_worker != night_worker and day_worker != weekend_worker and night_worker != weekend_worker:
                     new_individual = individual + [[day_worker, night_worker, weekend_worker]]
+                    # Check if the new schedule is valid
                     if is_valid(new_individual):
+                        # If the new schedule is valid, continue with the next week
                         if backtrack(new_individual):
                             individual[:] = new_individual
                             return True
@@ -56,28 +98,42 @@ def backtrack(individual):
 
 
 def init_individual():
+    """
+    This function generates a valid schedule.
+    It uses the backtrack function to generate a valid schedule.
+    If the backtrack function cannot generate a valid schedule after 10 attempts, it stops and returns an empty list.
+    :return: list of weeks, where each week is a list of three integers representing the workers
+    """
     individual = []
     attempts = 0
     while not backtrack(individual):
         individual = []
         attempts += 1
-        if attempts > 10:  # Limitamos los intentos para evitar ciclos infinitos
+        # Limit the attempts to avoid infinite loops
+        if attempts > 10:
             break
     return individual
 
 
 def evaluate(individual, year=YEAR):
-    """Función de aptitud que mide cuán equitativa es la distribución durante el año y dentro de cada mes."""
-    # Función auxiliar para calcular la varianza
+    """
+    This fitness function measures how equitable the distribution is throughout the year and within each month.
+    It calculates the variance of the number of shifts for each worker.
+    The variance is a measure of how spread out the numbers are.
+    :param individual: list of weeks, where each week is a list of three integers representing the workers
+    :param year: year for which the schedule is being optimized
+    :return: tuple with a single element, which is the imbalance measure of the schedule
+    """
+    # Helper function to calculate the variance
     def calculate_variance(counts, expected):
         return sum([(count - expected) ** 2 for count in counts.values()]) / len(NAMES)
 
-    # Separar trabajadores por tipo de turno
+    # Separate workers by shift type
     day_workers = [week[0] for week in individual]
     night_workers = [week[1] for week in individual]
     weekend_workers = [week[2] for week in individual]
 
-    # Calcular la varianza total
+    # Calculate the total variance
     expected_days = len(individual) / len(NAMES)
     year_variance = sum([
         calculate_variance({i: day_workers.count(i) for i in set(day_workers)}, expected_days),
@@ -85,7 +141,7 @@ def evaluate(individual, year=YEAR):
         calculate_variance({i: weekend_workers.count(i) for i in set(weekend_workers)}, expected_days)
     ])
 
-    # Calcular la varianza dentro de cada mes
+    # Calculate the variance within each month
     month_variances = []
     for month in range(1, 13):
         last_day = calendar.monthrange(year, month)[1]
@@ -106,34 +162,49 @@ def evaluate(individual, year=YEAR):
                                for i in set(month_weekend_workers)}, expected_days_in_month)
         ]))
 
-    # Combinar la varianza total y la varianza mensual para obtener la medida final de desequilibrio
+    # Combine the total variance and the monthly variance to get the final imbalance measure
     total_variance = 2 * year_variance + sum(month_variances)
 
     return total_variance,
 
 
 def mutate_individual(ind, year=YEAR):
-    day_to_mutate = random.randint(0, len(ind) - 1)  # Seleccionamos aleatoriamente una semana para mutar
+    """
+    This function mutates a schedule.
+    Mutation is an evolutionary operator that introduces diversity in the population.
+    It randomly selects a week and changes the workers for that week.
+    If the new schedule is not valid, it tries again up to 10 times.
+    :param ind: list of weeks, where each week is a list of three integers representing the workers
+    :param year: year for which the schedule is being optimized
+    :return: tuple with a single element, which is the mutated schedule
+    """
+    day_to_mutate = random.randint(0, len(ind) - 1)  # Randomly select a week to mutate
     attempts = 0
     mutated = False
     while not mutated:
         new_day_schedule = random.sample(range(len(NAMES)), 3)
         ind[day_to_mutate] = new_day_schedule
+        # Check if the new schedule is valid
         if is_valid(ind):
             mutated = True
         attempts += 1
-        if attempts > 10:  # Limitamos los intentos para evitar ciclos infinitos
+        # Limit the attempts to avoid infinite loops
+        if attempts > 10:
             break
     return ind,
 
 
 def setup_toolbox():
+    """
+    This function sets up the DEAP toolbox.
+    It registers the functions for creating individuals and populations, and for the evolutionary operators.
+    """
     global toolbox
 
-    # Reiniciar la toolbox
+    # Reset the toolbox
     toolbox = base.Toolbox()
 
-    # Configuraciones
+    # Register the functions
     toolbox.register("individual", tools.initIterate, creator.Individual, init_individual)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("mate", tools.cxTwoPoint)
@@ -143,6 +214,11 @@ def setup_toolbox():
 
 
 def convert_to_names(individual):
+    """
+    This function converts a schedule from a list of indices to a list of names.
+    :param individual: list of weeks, where each week is a list of three integers representing the workers
+    :return: list of weeks, where each week is a list of three names representing the workers
+    """
     named_schedule = []
     for week in individual:
         named_week = [NAMES[day_worker] for day_worker in week]
@@ -151,6 +227,17 @@ def convert_to_names(individual):
 
 
 def optimize_schedule(names, year=YEAR, generations=200, population_size=100):
+    """
+    This function optimizes a shift schedule.
+    It uses a genetic algorithm to find the best schedule.
+    The algorithm evolves a population of schedules over a number of generations.
+    In each generation, it selects the best schedules, applies crossover and mutation, and creates a new population.
+    :param names: list of the workers' names
+    :param year: year for which the schedule is being optimized
+    :param generations: number of generations of the population
+    :param population_size: size of the population
+    :return: list of weeks, where each week is a list of three names representing the workers
+    """
     global NAMES
     NAMES = names
     setup_toolbox()
@@ -163,39 +250,41 @@ def optimize_schedule(names, year=YEAR, generations=200, population_size=100):
         ind.fitness.values = fit
 
     for gen in range(NGEN):
-        print(f"-- Generación {gen} --")
+        print(f"-- Generation {gen} --")
 
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
 
-        # Cruzamiento
+        # Crossover
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
             if random.random() < CXPB:
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values
 
-        # Mutación
+        # Mutation
         for mutant in offspring:
             if random.random() < MUTPB:
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
 
-        # Verificar y corregir individuos inválidos
+        # Check and correct invalid schedules
         for child in offspring:
             if not is_valid(child):
                 child[:] = init_individual()
 
-        # Evaluar individuos después del cruzamiento y mutación
+        # Evaluate the schedules after crossover and mutation
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
 
-        # Actualizar la población
+        # Update the population
         pop[:] = offspring
 
     best_ind = tools.selBest(pop, 1)[0]
     best_named_ind = convert_to_names(best_ind)
 
     return best_named_ind
+
+
