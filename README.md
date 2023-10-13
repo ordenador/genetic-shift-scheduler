@@ -39,7 +39,7 @@ The **Genetic Shift Scheduler** is an innovative tool that employs genetic algor
 
 ### Genetic Algorithm:
 - **Chromosome**: Represents a shift assignment for the entire year.
-- **Fitness function**: Evaluates how equitable a solution is.
+- **Fitness function**: Evaluates the equitability of a solution.
 - **Operators**: Crossover, mutation, and selection.
 - **Execution and Evaluation**: Executes the algorithm and evaluates the results.
 
@@ -66,7 +66,7 @@ The **Genetic Shift Scheduler** is an innovative tool that employs genetic algor
 
 4. **Worker Registration:** Enter the names of the workers you wish to schedule.
 
-5. **Schedule Generation:** Click on the "Create Calendar" button. The system will automatically generate a schedule based on the names you provided.
+5. **Schedule Generation:** Click the "Create Calendar" button. The system will automatically generate a schedule based on the names you provided.
 
 6. **Visualization:** Observe the shifts on the calendar and the metrics indicating how the shifts were distributed among the workers.
 
@@ -80,7 +80,7 @@ The **Genetic Shift Scheduler** is an innovative tool that employs genetic algor
 
 - The `deap` library is used to implement the genetic algorithm.
 - Several auxiliary functions are defined to respect shift requirements. For example: `is_valid`, `backtrack`, `init_individual`, `evaluate`, and `mutate_individual`.
-- A web API with Flask is implemented with endpoints to optimize the schedule (`/optimize`), save (`/save_schedule`), load (`/load_file_schedule`), and list schedule files (`/list_schedules`).
+- A web API is implemented using Flask, with endpoints for optimizing the schedule (`/optimize`), saving (`/save_schedule`), loading (`/load_file_schedule`), and listing schedule files (`/list_schedules`).
 
 ### Front-end (HTML and JavaScript):
 
@@ -115,17 +115,18 @@ The genetic representation of an individual is carried out through a chromosome.
 
 ## Evaluation through Fitness Function
 
-To evaluate how good a proposed schedule (or individual) is, we use a fitness function defined as:
+To assess the quality of a proposed schedule (or individual), a fitness function is utilized. The formula for this function is expressed as follows:
 
 ![f(i) equation](https://latex.codecogs.com/gif.latex?f(i)&space;=&space;w_1&space;\times&space;D_{annual}(i)&space;&plus;&space;w_2&space;\times&space;D_{monthly}(i))
 
-Where:
-- ![f(i)](https://latex.codecogs.com/gif.latex?f(i)): Represents the fitness or quality of the schedule of individual \( i \).
-- ![D_annual(i)](https://latex.codecogs.com/gif.latex?D_{annual}(i)): Measures the variability or inequality in the distribution of shifts throughout the year for individual \( i \).
-- ![D_monthly(i)](https://latex.codecogs.com/gif.latex?D_{monthly}(i)): Evaluates the deviation or inconsistency in the shift assignment for individual \( i \) in a specific month.
-- ![w_1 and w_2](https://latex.codecogs.com/gif.latex?w_1&space;and&space;w_2): Are weights or coefficients that determine the relative importance between the annual and monthly shift distribution. For instance, if the equity in the annual distribution is more important than the monthly, $\`w_1\`$ would be greater than $\`w_2\`$.
+Here's a breakdown of the elements within this formula:
+- ![f(i)](https://latex.codecogs.com/gif.latex?f(i)): Denotes the fitness or the quality of the schedule for individual \( i \).
+- ![D_annual(i)](https://latex.codecogs.com/gif.latex?D_{annual}(i)): Gauges the variability or disparity in shift distribution across the year for individual \( i \).
+- ![D_monthly(i)](https://latex.codecogs.com/gif.latex?D_{monthly}(i)): Assesses the deviation or inconsistency in shift assignments for individual \( i \) in a particular month.
+- $\`w_1\`$ and $\`w_2\`$: These are weights or coefficients assigned to balance the significance between the annual and monthly shift distributions. In this implementation, $\`w_1\`$ is set to 2, and $\`w_2\`$ is set to 1, indicating a higher priority is given to the annual distribution of shifts.
 
-This function ensures that the schedule is equitable not only throughout the year but also month by month. It is crucial to ensure that no employee is disadvantaged in shift allocation.
+This fitness function is engineered to ensure that the generated schedule is equitable on both an annual and monthly basis. This is pivotal in ensuring that no employee is unfairly treated in shift allocations, and the distribution of shifts aligns well with the organizational goals. With the specified weights, the function will lean towards solutions that offer a fairer annual distribution of shifts.
+
 
 ---
 ## Software Requirements for Shift Management with Genetic Algorithm Focus
@@ -133,7 +134,7 @@ This function ensures that the schedule is equitable not only throughout the yea
 ### Shift Definition:
 
 **a. Weekend Shift:** 
-  - **Interval:** From Friday at 16:01 to Monday at 8:59.
+  - **Interval:** From Friday at 16:01 to Monday at 08:59.
   - **Restriction:** The same employee must be in charge throughout the duration of the shift, from the start on Friday to the end on Monday.
 
 **b. Day Shift:** 
@@ -147,7 +148,7 @@ This function ensures that the schedule is equitable not only throughout the yea
   - **Restrictions:** 
     - The same employee covers from Friday to Sunday.
     - Must not be the employee assigned to the Day Shift of the same week.
-    - It takes place simultaneously with the Day Shift.
+    - Occurs simultaneously with the Day Shift.
 
 ### Allocation Guidelines:
 
@@ -165,7 +166,7 @@ This function ensures that the schedule is equitable not only throughout the yea
 ### 3. Evaluation and Metrics:
 
 **a. General Reports:** 
-  - The software should provide both monthly and annual metrics, aiming to evaluate the equity in shift distribution among all employees.
+  - The software should provide both monthly and annual metrics, aimed at evaluating the equity of shift distribution among all employees.
 
 **b. Shift Distribution:** 
   - It is essential to visualize the frequency with which each type of shift is assigned to each employee and compare that distribution with a theoretically equitable distribution.
@@ -178,4 +179,4 @@ This function ensures that the schedule is equitable not only throughout the yea
 
 ## Contributions
 
-All contributions are welcome. Review [CONTRIBUTING.md](./CONTRIBUTING.md) for more details on how to collaborate on this project.
+All contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for more details on how to collaborate on this project.
