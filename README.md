@@ -17,7 +17,7 @@
   - [Individual Design and Encoding](#individual-design-and-encoding)
     - [Individual Structure:](#individual-structure)
     - [Genetic Representation:](#genetic-representation)
-  - [Evaluation through Fitness Function](#evaluation-through-fitness-function)
+    - [Evaluation through Fitness Function](#evaluation-through-fitness-function)
   - [Software Requirements for Shift Management with Genetic Algorithm Focus](#software-requirements-for-shift-management-with-genetic-algorithm-focus)
     - [Shift Definition:](#shift-definition)
     - [Allocation Guidelines:](#allocation-guidelines)
@@ -110,25 +110,23 @@ In this structure:
 ### Genetic Representation:
 
 The genetic representation of an individual is carried out through a chromosome. In this chromosome:
-- Each gene is an integer number that ranges between 1 and `E`, representing the identification of an employee.
-- The position of each gene in the chromosome determines which shift and week it refers to. For example, the first gene might refer to the morning shift of week 1, the second to the afternoon shift of week 1, and so forth.
+- Each gene is an integer number that ranges between $1$ and $E$, representing the identification of an employee.
+- The position of each gene in the chromosome determines which shift and week it refers to. For example, the first gene might refer to the morning shift of week $1$, the second to the afternoon shift of week $1$, and so forth.
 
-## Evaluation through Fitness Function
+### Evaluation through Fitness Function
 
 To assess the quality of a proposed schedule (or individual), a fitness function is utilized. The formula for this function is expressed as follows:
 
-![f(i) equation](https://latex.codecogs.com/gif.latex?f(i)&space;=&space;w_1&space;\times&space;D_{annual}(i)&space;&plus;&space;w_2&space;\times&space;D_{monthly}(i))
+$$f(i) = w_1 \times D_{\text{annual}}(i) + w_2 \times D_{\text{monthly}}(i)$$
 
 Here's a breakdown of the elements within this formula:
-- ![f(i)](https://latex.codecogs.com/gif.latex?f(i)): Denotes the fitness or the quality of the schedule for individual \( i \).
-- ![D_annual(i)](https://latex.codecogs.com/gif.latex?D_{annual}(i)): Gauges the variability or disparity in shift distribution across the year for individual \( i \).
-- ![D_monthly(i)](https://latex.codecogs.com/gif.latex?D_{monthly}(i)): Assesses the deviation or inconsistency in shift assignments for individual \( i \) in a particular month.
-- $\`w_1\`$ and $\`w_2\`$: These are weights or coefficients assigned to balance the significance between the annual and monthly shift distributions. In this implementation, $\`w_1\`$ is set to 2, and $\`w_2\`$ is set to 1, indicating a higher priority is given to the annual distribution of shifts.
+- $f(i)$: Denotes the fitness or the quality of the schedule for individual $i$.
+- $D_{\text{annual}}(i)$: Gauges the variability or disparity in shift distribution across the year for individual $i$.
+- $D_{\text{monthly}}(i)$: Assesses the deviation or inconsistency in shift assignments for individual $i$ in a particular month.
+- $w_1$ and $w_2$: These are weights or coefficients assigned to balance the significance between the annual and monthly shift distributions. In this implementation, $w_1$ is set to $2$, and $w_2$ is set to $1$, indicating a higher priority is given to the annual distribution of shifts.
 
 This fitness function is engineered to ensure that the generated schedule is equitable on both an annual and monthly basis. This is pivotal in ensuring that no employee is unfairly treated in shift allocations, and the distribution of shifts aligns well with the organizational goals. With the specified weights, the function will lean towards solutions that offer a fairer annual distribution of shifts.
 
-
----
 ## Software Requirements for Shift Management with Genetic Algorithm Focus
 
 ### Shift Definition:
