@@ -10,7 +10,7 @@ click==8.1.7
     # via flask
 deap==1.4.1
     # via -r requirements.in
-flask==3.0.0
+flask==3.0.1
     # via -r requirements.in
 itsdangerous==2.1.2
     # via flask
